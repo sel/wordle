@@ -38,77 +38,69 @@ def read_puzzle_words(filename, word_len):
     with open(filename) as f:
         words = [w.rstrip() for w in f.readlines()]
     words = [w for w in words if len(w) == word_len and w.islower()]
-    print(f"Read {len(words)} lower-case {word_len} character words\n", file=sys.stderr)
+    print(f"Read {len(words)} lower-case {word_len} character words", file=sys.stderr)
     return words
 
 
-def scored_heterograms(words):
-    heterograms = [w for w in words if len(set(w)) == len(w)]
-    letter_freq = OrderedCounter("".join(heterograms))
-    word_scores = {h: sum([letter_freq[c] for c in h]) for h in heterograms}
+def words_by_letter_frequency(word_list):
+    letter_freq = OrderedCounter("".join(word_list))
+    word_scores = {h: sum([letter_freq[c] for c in h]) for h in word_list}
     return OrderedDict(sorted(word_scores.items(), key=lambda s: s[1]))
 
 
-def prompt(msg):
-    try:
-        return input(msg)
-    except EOFError:
-        return None
-
-
-def prompt_to_continue():
-    resp = prompt("Was the guess accepted? (Y/N) ")
-    return len(resp) > 0 and resp[0].upper() == "Y"
-
-
-def select_first_guess(words):
-    first_guesses = scored_heterograms(words)
-    guess = ""
-    while True:
-        guess = first_guesses.popitem()
-        print(f"Guess is '{guess[0]}' (score={guess[1]})")
-        if prompt_to_continue():
-            return guess[0]
-
-
 def read_hint(puzzel_len):
-    hint = ""
-    while len(hint) != puzzel_len or not set(hint).issubset({"G", "Y", "X"}):
-        hint = prompt("Enter hint G/Y/X: ").upper()
-    return hint
-
-
-def next_guess(words, guess, hint):
     while True:
-        for i, c in enumerate(guess):
-            if hint[i] == "G":
-                # Remove all words without c in pos i
-                words = [w for w in words if w[i] == c]
-            elif hint[i] == "Y":
-                # Remove all words either missing c or with c in pos i
-                words = [w for w in words if w[i] != c and c in w]
-            else:
-                # Remove all words containing c
+        hint = input(f"Enter hint (gyx * 5) or nothing if guess was not accepted: ").lower()
+        if len(hint) == 0:
+            return None
+        elif len(hint) == puzzel_len and set(hint).issubset({"g", "y", "x"}):
+            return hint
+
+
+def next_guess(word_list, puzzel_len):
+    unacceptable = []
+    while len(word_list) > 0:
+        guess = word_list.popitem()
+        print(f"\nNext guess is '{guess[0]}' (score={guess[1]})")
+        hint = read_hint(puzzel_len)
+        if hint:
+            return guess[0], hint, unacceptable
+        else:
+            unacceptable += guess
+    raise Exception("unsolvable: exhausted the word-list")
+
+
+def apply_hint(ordered_words, guess, hint, unacceptable):
+    words = [w for w in ordered_words.keys() if w not in unacceptable]
+    for i, c in enumerate(guess):
+        if hint[i] == "g":
+            words = [w for w in words if w[i] == c]
+        elif hint[i] == "y":
+            words = [w for w in words if c in w and w[i] != c]
+        elif hint[i] == "x":
+            # FIXME(sel): Limit grey(x) processing to the case when there is only one occurrence
+            # of c in guess.  Otherwise by simply removing all words containing c would we would
+            # fail in the case where there are multiple occurrences of c in guess with a mixture of
+            # green and grey.
+            if guess.count(c) == 1:
                 words = [w for w in words if c not in w]
-        print(f"{len(words)} words remaining in word-list", file=sys.stderr)
-
-        for w in words:
-            print(f"\nNext guess is '{w}'")
-            if prompt_to_continue():
-                return words, w
-
-        raise Exception("Unsolvable")
+        print(f"{len(words)} words remaining in word-list after applying hint {i}={hint[i]} to guess {guess}", file=sys.stderr)
+    return OrderedDict([(w, ordered_words[w]) for w in words])
 
 
 def main(word_file, puzzel_len):
-    words = read_puzzle_words(word_file, puzzel_len)
-    guess = select_first_guess(words)
+    all_words = read_puzzle_words(word_file, puzzel_len)
+    ordered_words = words_by_letter_frequency(all_words)
+    heterograms = [w for w in all_words if len(set(w)) == len(w)]
+    ordered_heterograms = words_by_letter_frequency(heterograms)
+
+    guess, hint, unacceptable = next_guess(ordered_heterograms, puzzel_len)
     while True:
-        hint = read_hint(puzzel_len)
-        if hint == "G" * puzzel_len:
+        if hint == "g" * puzzel_len:
             print("Congratulations!")
             break
-        words, guess = next_guess(words, guess, hint)
+        ordered_words = apply_hint(ordered_words, guess, hint, unacceptable)
+        guess, hint, unacceptable = next_guess(ordered_words, puzzel_len)
 
 
 if __name__ == "__main__":

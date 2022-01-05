@@ -35,6 +35,6 @@ Congratulations!
 
 ## TODO
 
-- [ ] Sort word-list in `next_guess` by letter frequency, as already done for the first guess.
+- [x] Sort word-list in `next_guess` by letter frequency, as already done for the first guess.
 - [ ] See if there is a fancy data-structure that would improve performance.
 - [ ] Add tests...
