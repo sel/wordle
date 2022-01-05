@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 #
-# Generates a best strategy for solving wordle
+# Wordle solver
+# https://www.powerlanguage.co.uk/wordle/
+
 
 import sys
 
@@ -16,7 +18,7 @@ def read_puzzle_words(filename, word_len):
     with open(filename) as f:
         words = [w.rstrip() for w in f.readlines()]
     words = [w for w in words if len(w) == word_len and w.islower()]
-    print(f"Read {len(words)} lower-case, {word_len} character words\n", file=sys.stderr)
+    print(f"Read {len(words)} lower-case {word_len} character words\n", file=sys.stderr)
     return words
 
 
@@ -29,10 +31,14 @@ def scored_heterograms(words):
 
 def prompt(msg):
     try:
-        resp = input(msg)
+        return input(msg)
     except EOFError:
         return None
-    return resp
+
+
+def prompt_to_continue():
+    resp = prompt("Was the guess accepted? (Y/N) ")
+    return len(resp) > 0 and resp[0].upper() == "Y"
 
 
 def select_first_guess(words):
@@ -41,21 +47,48 @@ def select_first_guess(words):
     while True:
         guess = first_guesses.popitem()
         print(f"Guess is '{guess[0]}' (score={guess[1]})")
-        resp = prompt("\nWas the guess accepted? (Y/N)\n")
-        if len(resp) > 0 and resp[0].upper() == "Y":
-            return guess
+        if prompt_to_continue():
+            return guess[0]
 
 
-def read_guess(required_len):
-    guess = ""
-    while len(guess) != required_len:
-        guess = prompt("\nEnter guess:\n")
-    return guess
+def read_hint(puzzel_len):
+    hint = ""
+    while len(hint) != puzzel_len or not set(hint).issubset({"G", "Y", "X"}):
+        hint = prompt("Enter hint G/Y/X: ").upper()
+    return hint
+
+
+def next_guess(words, guess, hint):
+    while True:
+        for i, c in enumerate(guess):
+            if hint[i] == "G":
+                # Remove all words without c in pos i
+                words = [w for w in words if w[i] == c]
+            elif hint[i] == "Y":
+                # Remove all words either missing c or with c in pos i
+                words = [w for w in words if w[i] != c and c in w]
+            else:
+                # Remove all words containing c
+                words = [w for w in words if c not in w]
+        print(f"{len(words)} words remaining in word-list", file=sys.stderr)
+
+        for w in words:
+            print(f"\nNext guess is '{w}'")
+            if prompt_to_continue():
+                return words, w
+
+        raise Exception("Unsolvable")
 
 
 def main(word_file, puzzel_len):
     words = read_puzzle_words(word_file, puzzel_len)
-    _ = select_first_guess(words)
+    guess = select_first_guess(words)
+    while True:
+        hint = read_hint(puzzel_len)
+        if hint == "G" * puzzel_len:
+            print("Congratulations!")
+            break
+        words, guess = next_guess(words, guess, hint)
 
 
 if __name__ == "__main__":
@@ -64,4 +97,4 @@ if __name__ == "__main__":
     try:
         main(word_file, puzzel_len)
     except KeyboardInterrupt:
-        print("Exiting", file=sys.stderr)
+        print("\nExiting", file=sys.stderr)
