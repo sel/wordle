@@ -9,33 +9,21 @@ Python solver for the [Wordle](https://www.powerlanguage.co.uk/wordle/) puzzel.
 $ ./solve.py
 ```
 ```
-Read 8497 lower-case 5 character words
+Read 12972 lower-case 5 character words
 
-Next guess is 'tarie' (score=10530)
-Enter hint (gyx * 5) or nothing if guess was not accepted:
+Next guess is 'soare' (score=16999)
+Enter hint (gyx * 5) or nothing if guess was not accepted: xxyxx
 
-Next guess is 'retia' (score=10530)
-Enter hint (gyx * 5) or nothing if guess was not accepted: xxxxy
+Next guess is 'aalii' (score=22869)
+Enter hint (gyx * 5) or nothing if guess was not accepted: ygyxx
 
-Next guess is 'amaas' (score=17085)
-Enter hint (gyx * 5) or nothing if guess was not accepted:
+Next guess is 'lanai' (score=22062)
+Enter hint (gyx * 5) or nothing if guess was not accepted: ygggx
 
-Next guess is 'oasal' (score=16486)
-Enter hint (gyx * 5) or nothing if guess was not accepted:
-
-Next guess is 'salal' (score=16053)
-Enter hint (gyx * 5) or nothing if guess was not accepted: xgxgg
-
-Next guess is 'oadal' (score=15502)
-Enter hint (gyx * 5) or nothing if guess was not accepted:
-
-Next guess is 'canal' (score=15062)
+Next guess is 'canal' (score=20331)
 Enter hint (gyx * 5) or nothing if guess was not accepted: xgggg
 
-Next guess is 'manal' (score=14817)
-Enter hint (gyx * 5) or nothing if guess was not accepted:
-
-Next guess is 'banal' (score=14678)
+Next guess is 'banal' (score=19930)
 Enter hint (gyx * 5) or nothing if guess was not accepted: ggggg
 Congratulations!
 ```

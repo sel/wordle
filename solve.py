@@ -104,7 +104,7 @@ def main(word_file, puzzel_len):
 
 
 if __name__ == "__main__":
-    word_file = "/usr/share/dict/words"
+    word_file = "word.list"
     puzzel_len = 5
     try:
         main(word_file, puzzel_len)
