@@ -84,7 +84,8 @@ def apply_hint(ordered_words, guess, hint, unacceptable):
             # green and grey.
             if guess.count(c) == 1:
                 words = [w for w in words if c not in w]
-        print(f"{len(words)} words remaining in word-list after applying hint {i}={hint[i]} to guess {guess}", file=sys.stderr)
+        # print(f"{len(words)} words remaining in word-list after applying hint {i}={hint[i]} to guess {guess}.",
+        #       f"Head={list(reversed(words[-5:]))}", file=sys.stderr)
     return OrderedDict([(w, ordered_words[w]) for w in words])
 
 

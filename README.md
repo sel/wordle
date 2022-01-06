@@ -11,24 +11,32 @@ $ ./solve.py
 ```
 Read 8497 lower-case 5 character words
 
-Guess is 'tarie' (score=10530)
-Was the guess accepted? (Y/N) n
-Guess is 'retia' (score=10530)
-Was the guess accepted? (Y/N) y
-Enter hint G/Y/X: yyyyx
-23 words remaining in word-list
+Next guess is 'tarie' (score=10530)
+Enter hint (gyx * 5) or nothing if guess was not accepted:
 
-Next guess is 'inert'
-Was the guess accepted? (Y/N) y
-Enter hint G/Y/X: yxyyy
-17 words remaining in word-list
+Next guess is 'retia' (score=10530)
+Enter hint (gyx * 5) or nothing if guess was not accepted: xxxxy
 
-Next guess is 'ticer'
-Was the guess accepted? (Y/N) n
+Next guess is 'amaas' (score=17085)
+Enter hint (gyx * 5) or nothing if guess was not accepted:
 
-Next guess is 'tiger'
-Was the guess accepted? (Y/N) y
-Enter hint G/Y/X: ggggg
+Next guess is 'oasal' (score=16486)
+Enter hint (gyx * 5) or nothing if guess was not accepted:
+
+Next guess is 'salal' (score=16053)
+Enter hint (gyx * 5) or nothing if guess was not accepted: xgxgg
+
+Next guess is 'oadal' (score=15502)
+Enter hint (gyx * 5) or nothing if guess was not accepted:
+
+Next guess is 'canal' (score=15062)
+Enter hint (gyx * 5) or nothing if guess was not accepted: xgggg
+
+Next guess is 'manal' (score=14817)
+Enter hint (gyx * 5) or nothing if guess was not accepted:
+
+Next guess is 'banal' (score=14678)
+Enter hint (gyx * 5) or nothing if guess was not accepted: ggggg
 Congratulations!
 ```
 
